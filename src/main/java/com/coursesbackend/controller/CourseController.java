@@ -1,6 +1,7 @@
 package com.coursesbackend.controller;
 
 import com.coursesbackend.entity.Course;
+import com.coursesbackend.exception.CourseExistException;
 import com.coursesbackend.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,23 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(allCourses);
     }
 
+    @GetMapping("/all-courses/{id}")
+    public ResponseEntity<Course> getCourse(@PathVariable Long id) throws CourseExistException{
+        Course singleCourse = courseService.getSingleCourse(id);
+        return ResponseEntity.status(HttpStatus.OK).body(singleCourse);
+    }
+
     @PostMapping("/save-course")
-    public ResponseEntity<Course> saveSingleCourse(@RequestBody Course course){
+    public ResponseEntity<Course> saveSingleCourse(@RequestBody Course course) throws CourseExistException {
         Course course1 = courseService.addSingleCourse(course);
         return ResponseEntity.status(HttpStatus.OK).body(course1);
     }
 
+    @PutMapping("/update-course/{id}")
+    public ResponseEntity<Course> updateSingleCourse(@RequestBody Course course, @PathVariable Long id) throws CourseExistException{
+        Course updatedCourse = courseService.updateSingleCourse(course, id);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCourse);
+    }
 
     @DeleteMapping("/delete/{courseId}")
     public ResponseEntity<?> deleteCourseByCourseId(@PathVariable Long courseId){
